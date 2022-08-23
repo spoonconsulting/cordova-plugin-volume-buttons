@@ -8,15 +8,15 @@ function handlers() {
 var VolumeButtons = function() {
 	this.channels = { buttonsListener:cordova.addWindowEventHandler('volumebuttonslistener') };
 	for(var key in this.channels) {
-		this.channels[key].onHasSubscribersChange= VolumeButtons.onHasSubscribersChange;
+		this.channels[key].onHasSubscribersChange = VolumeButtons.onHasSubscribersChange;
     }
 };
 
 VolumeButtons.onHasSubscribersChange = function() {
 	if (this.numHandlers === 1 && handlers() === 1) {
-		exec(VolumeButtons.volumeButtonsListener, VolumeButtons.errorListener, 'cordova-plugin-volume-buttons', 'start', []);
+		exec(VolumeButtons.volumeButtonsListener, VolumeButtons.errorListener, 'CDVVolumeButtons', 'start', []);
     } else if (handlers() === 0) {
-		exec(null, null, 'cordova-plugin-volume-buttons', 'stop', []);
+		exec(null, null, 'CDVVolumeButtons', 'stop', []);
     }
 };
 
@@ -32,7 +32,7 @@ VolumeButtons.prototype.volumeButtonsListener = function(info) {
 };
 
 VolumeButtons.prototype.errorListener = function(e) {
-	console.log("Error initializing cordova-plugin-volume-buttons: " + e);
+	console.log("Error initializing CDVVolumeButtons: " + e);
 }
 
 var volumeButtons = new VolumeButtons();
