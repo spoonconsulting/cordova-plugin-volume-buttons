@@ -1,0 +1,25 @@
+{
+  "name": "@spoonconsulting/cordova-plugin-volume-buttons",
+  "version": "1.0.0",
+  "description": "cordova-plugin-volume-buttons",
+  "cordova": {
+    "id": "@spoonconsulting/cordova-plugin-volume-buttons",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spoonconsulting/cordova-plugin-volume-buttons.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "author": "Zafir & Dinitri",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spoonconsulting/cordova-plugin-volume-buttons/issues"
+  },
+  "homepage": "https://github.com/spoonconsulting/cordova-plugin-volume-buttons#readme"
+}
