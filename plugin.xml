@@ -10,7 +10,7 @@
                 <param name="ios-package" value="cordova-plugin-volume-buttons" />
             </feature>
         </config-file>
-        <source-file src="src/ios/cordova-plugin-volume-buttons.m" />
+        <source-file src="src/ios/CDVVolumeButtons.m" />
         <framework src="JPSVolumeButtonHandler" type="podspec" spec="~> 1.0" />
     </platform>
 </plugin>
