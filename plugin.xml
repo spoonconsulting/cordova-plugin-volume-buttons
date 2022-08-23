@@ -1,2 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="@spoonconsulting/cordova-plugin-volume-buttons" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"><name>cordova-plugin-volume-buttons</name><js-module name="cordova-plugin-volume-buttons" src="www/cordova-plugin-volume-buttons.js"><clobbers target="cordova.plugins.cordova-plugin-volume-buttons" /></js-module><platform name="ios"><config-file parent="/*" target="config.xml"><feature name="cordova-plugin-volume-buttons"><param name="ios-package" value="cordova-plugin-volume-buttons" /></feature></config-file><source-file src="src/ios/cordova-plugin-volume-buttons.m" /></platform></plugin>
+<plugin id="@spoonconsulting/cordova-plugin-volume-buttons" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>cordova-plugin-volume-buttons</name>
+    <js-module name="cordova-plugin-volume-buttons" src="www/cordova-plugin-volume-buttons.js">
+        <clobbers target="cordova.plugins.cordova-plugin-volume-buttons" />
+    </js-module>
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="cordova-plugin-volume-buttons">
+                <param name="ios-package" value="cordova-plugin-volume-buttons" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/cordova-plugin-volume-buttons.m" />
+        <framework src="JPSVolumeButtonHandler" type="podspec" spec="~> 1.0" />
+    </platform>
+</plugin>

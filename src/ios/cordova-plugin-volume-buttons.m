@@ -6,12 +6,12 @@
   // Member variables go here.
 }
 
-- (void)coolMethod:(CDVInvokedUrlCommand*)command;
+- (void)start:(CDVInvokedUrlCommand*)command;
 @end
 
 @implementation cordova-plugin-volume-buttons
 
-- (void)coolMethod:(CDVInvokedUrlCommand*)command
+- (void)start:(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult = nil;
     NSString* echo = [command.arguments objectAtIndex:0];
