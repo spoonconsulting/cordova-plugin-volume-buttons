@@ -1,5 +1,3 @@
-/********* cordova-plugin-volume-buttons.m Cordova Plugin Implementation *******/
-
 #import <Cordova/CDV.h>
 #import <JPSVolumeButtonHandler.h>
 

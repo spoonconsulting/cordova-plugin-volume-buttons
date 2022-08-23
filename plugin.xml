@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="@spoonconsulting/cordova-plugin-volume-buttons" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>cordova-plugin-volume-buttons</name>
-    <js-module name="cordova-plugin-volume-buttons" src="www/cordova-plugin-volume-buttons.js">
+    <js-module name="cordova-plugin-volume-buttons" src="www/CDVVolumeButtons.js">
         <clobbers target="cordova.plugins.cordova-plugin-volume-buttons" />
     </js-module>
     <platform name="ios">
