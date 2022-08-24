@@ -1,39 +1,15 @@
 var cordova = require('cordova');
 var exec = require('cordova/exec');
 
-function handlers() {
-	return volumeButtons.channels.buttonsListener.numHandlers;
-}
-
-var VolumeButtons = function() {
-	this.channels = { buttonsListener:cordova.addWindowEventHandler('volumebuttonslistener') };
-	for(var key in this.channels) {
-		this.channels[key].onHasSubscribersChange = VolumeButtons.onHasSubscribersChange;
-    }
-};
-
-VolumeButtons.onHasSubscribersChange = function() {
-	if (this.numHandlers === 1 && handlers() === 1) {
-		exec(VolumeButtons.volumeButtonsListener, VolumeButtons.errorListener, 'CDVVolumeButtons', 'start', []);
-    } else if (handlers() === 0) {
+var volumeEventHandler = cordova.addWindowEventHandler('volumebuttonslistener');
+volumeEventHandler.onHasSubscribersChange = function() {
+	if (volumeEventHandler.numHandlers === 1) {
+		exec(function() {
+			cordova.fireWindowEvent('volumebuttonslistener', null);
+		}, function(e) {
+			console.log("CDVVolumeButtons error", e);
+		}, 'CDVVolumeButtons', 'start', []);
+	} else if (volumeEventHandler.numHandlers === 0) {
 		exec(null, null, 'CDVVolumeButtons', 'stop', []);
-    }
-};
-
-/**
-* 	Callback used when the user presses the volume button of the device
-*
-*	@param {Object} info	keys: signal ['volume-up' or 'volume-down'] 
-*/
-VolumeButtons.prototype.volumeButtonsListener = function(info) {
-	if (info) {
-		cordova.fireWindowEvent("volumebuttonslistener", info);
 	}
-};
-
-VolumeButtons.prototype.errorListener = function(e) {
-	console.log("Error initializing CDVVolumeButtons: " + e);
 }
-
-var volumeButtons = new VolumeButtons();
-module.exports = volumeButtons;

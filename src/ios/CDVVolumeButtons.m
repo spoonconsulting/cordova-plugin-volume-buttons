@@ -20,7 +20,9 @@
             [pluginResult setKeepCallback:@YES];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         } downBlock:^{
-            // Volume Down Button Pressed
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+            [pluginResult setKeepCallback:@YES];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
     }
 
