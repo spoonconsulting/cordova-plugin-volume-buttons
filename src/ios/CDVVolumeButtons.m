@@ -6,13 +6,15 @@
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command;
+@property (nonatomic, strong) JPSVolumeButtonHandler *volumeButtonHandler;
 @end
 
 @implementation CDVVolumeButtons
 
 - (void)start:(CDVInvokedUrlCommand*)command
 {
-    if (self.volumeButtonHandler == nil)
+    NSLog(@"ZAFIR");
+    if (self.volumeButtonHandler == nil) {
         self.volumeButtonHandler = [JPSVolumeButtonHandler volumeButtonHandlerWithUpBlock:^{
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [pluginResult setKeepCallback:@YES];
