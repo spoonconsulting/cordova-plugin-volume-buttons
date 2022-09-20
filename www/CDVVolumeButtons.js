@@ -1,7 +1,7 @@
 var cordova = require('cordova');
 var exec = require('cordova/exec');
 
-var volumeEventHandler = cordova.addWindowEventHandler('volumebuttonslistener');
+var volumeEventHandler = cordova.addDocumentEventHandler('volumebuttonslistener');
 volumeEventHandler.onHasSubscribersChange = function() {
 	if (volumeEventHandler.numHandlers === 1) {
 		exec(function() {

@@ -13,7 +13,6 @@
 
 - (void)start:(CDVInvokedUrlCommand*)command
 {
-    NSLog(@"ZAFIR");
     if (self.volumeButtonHandler == nil) {
         self.volumeButtonHandler = [JPSVolumeButtonHandler volumeButtonHandlerWithUpBlock:^{
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -25,7 +24,6 @@
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
     }
-
     [self.volumeButtonHandler startHandler:YES]; 
 }
 
