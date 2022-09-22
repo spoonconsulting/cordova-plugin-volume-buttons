@@ -6,13 +6,22 @@
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command;
-@property (nonatomic, strong) JPSVolumeButtonHandler *volumeButtonHandler;
+@property (strong, nonatomic) JPSVolumeButtonHandler *volumeButtonHandler;
 @end
 
 @implementation CDVVolumeButtons
 
-- (void)start:(CDVInvokedUrlCommand*)command
-{
+- (void)onPause {
+    [self.volumeButtonHandler stopHandler];
+}
+
+- (void)onResume {
+    [self.volumeButtonHandler startHandler:YES];
+}
+
+- (void)start:(CDVInvokedUrlCommand*)command {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPause) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
     if (self.volumeButtonHandler == nil) {
         self.volumeButtonHandler = [JPSVolumeButtonHandler volumeButtonHandlerWithUpBlock:^{
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
