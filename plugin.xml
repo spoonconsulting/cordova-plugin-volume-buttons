@@ -5,11 +5,6 @@
         <clobbers target="cordova.plugins.cordova-plugin-volume-buttons" />
     </js-module>
     <platform name="ios">
-        <config-file parent="/*" target="config.xml">
-            <feature name="cordova-plugin-volume-buttons">
-                <param name="ios-package" value="cordova-plugin-volume-buttons" />
-            </feature>
-        </config-file>
         <config-file target="config.xml" parent="/*">
             <feature name="CDVVolumeButtons">
                 <param name="ios-package" value="CDVVolumeButtons" />
