@@ -2,12 +2,17 @@ var cordova = require('cordova');
 var exec = require('cordova/exec');
 var channel = require('cordova/channel');
 
-var VolumeButtons = function() {
-	this.type = "unknown";
-}
+var VolumeButtons = function() {}
 
 VolumeButtons.prototype.getInfo = function (successCallback, errorCallback) {
-	exec(successCallback, errorCallback, 'CDVVolumeButtons', 'start', []);
+    var volumeEventHandler = cordova.addDocumentEventHandler('volumebuttonslistener');
+    volumeEventHandler.onHasSubscribersChange = function() {
+        if (volumeEventHandler.numHandlers === 1) {
+            exec(successCallback, errorCallback, 'CDVVolumeButtons', 'start', []);
+        } else if (volumeEventHandler.numHandlers === 0) {
+            exec(null, null, 'CDVVolumeButtons', 'stop', []);
+        }
+    }
 };
 
 var volumeButtons = new VolumeButtons();

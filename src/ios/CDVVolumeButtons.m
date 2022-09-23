@@ -5,7 +5,10 @@
   // Member variables go here.
 }
 
+- (void)onPause;
+- (void)onResume;
 - (void)start:(CDVInvokedUrlCommand*)command;
+- (void)stop:(CDVInvokedUrlCommand*)command;
 @property (strong, nonatomic) JPSVolumeButtonHandler *volumeButtonHandler;
 @end
 
@@ -33,7 +36,11 @@
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
     }
-    [self.volumeButtonHandler startHandler:YES]; 
+    [self.volumeButtonHandler startHandler:YES];
+}
+
+- (void)stop:(CDVInvokedUrlCommand*)command {
+    [self.volumeButtonHandler stopHandler];
 }
 
 @end
