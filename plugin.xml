@@ -15,7 +15,7 @@
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="CDVVolumeButtons">
-                <param name="android-package" value="com.spoon.volumebuttons" />
+                <param name="android-package" value="com.spoon.CDVVolumeButtons" />
             </feature>
         </config-file>
         <config-file parent="/*" target="AndroidManifest.xml"></config-file>
