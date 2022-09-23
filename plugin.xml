@@ -5,12 +5,13 @@
         <clobbers target="navigator.volumebuttons" />
     </js-module>
     <platform name="ios">
-        <config-file parent="/*" target="config.xml">
-            <feature name="cordova-plugin-volume-buttons">
-                <param name="ios-package" value="cordova-plugin-volume-buttons" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="CDVVolumeButtons">
+                <param name="ios-package" value="CDVVolumeButtons" />
             </feature>
         </config-file>
-        <source-file src="src/ios/cordova-plugin-volume-buttons.m" />
+        <source-file src="src/ios/CDVVolumeButtons.m" />
+        <framework src="JPSVolumeButtonHandler" type="podspec" spec="~> 1.0" />
     </platform>
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
