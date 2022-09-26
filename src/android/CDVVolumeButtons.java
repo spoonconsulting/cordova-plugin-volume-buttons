@@ -73,6 +73,6 @@ public class CDVVolumeButtons extends CordovaPlugin implements View.OnKeyListene
                 this.volumeCallbackContext.sendPluginResult(pluginResult);
             }
         }
-        return false;
+        return true;
     }
 }
