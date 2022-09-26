@@ -1,15 +1,13 @@
-/********* cordova-plugin-volume-buttons.m Cordova Plugin Implementation *******/
-
 #import <Cordova/CDV.h>
 
-@interface cordova-plugin-volume-buttons : CDVPlugin {
+@interface CDVVolumeButtons : CDVPlugin {
   // Member variables go here.
 }
 
 - (void)coolMethod:(CDVInvokedUrlCommand*)command;
 @end
 
-@implementation cordova-plugin-volume-buttons
+@implementation CDVVolumeButtons
 
 - (void)coolMethod:(CDVInvokedUrlCommand*)command
 {
