@@ -2,6 +2,7 @@ package com.spoon.volumebuttons;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -49,6 +50,7 @@ public class CDVVolumeButtons extends CordovaPlugin implements View.OnKeyListene
         if (this.volumeCallbackContext != null) {
             return;
         }
+        this.webView.getView().requestFocus();
         this.volumeCallbackContext = callbackContext;
         this.webView.getView().setOnKeyListener(this);
     }
