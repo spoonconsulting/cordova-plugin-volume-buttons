@@ -11,7 +11,7 @@
 - (void)start:(CDVInvokedUrlCommand*)command;
 - (void)stop:(CDVInvokedUrlCommand*)command;
 @property (strong, nonatomic) JPSVolumeButtonHandler *volumeButtonHandler;
-@property (nonatomic) double defaultVolume;
+@property (nonatomic) float defaultVolume;
 @property (strong, nonatomic) UISlider *volumeViewSlider;
 @end
 
