@@ -22,7 +22,6 @@
 }
 
 - (void)onResume {
-    self.defaultVolume = self.volumeViewSlider.value;
     [self.volumeButtonHandler startHandler:YES];
 }
 
