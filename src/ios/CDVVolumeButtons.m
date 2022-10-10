@@ -27,25 +27,14 @@
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command {
-    MPVolumeView *volumeView = [[MPVolumeView alloc] init];
-    for (UIView *view in volumeView.subviews) {
-        if ([view isKindOfClass:[UISlider class]]) {
-            self.volumeViewSlider = (UISlider *)view;
-            break;
-        }
-    }
-    AVAudioSession *avAudioSession = AVAudioSession.sharedInstance;
-    self.defaultVolume = avAudioSession.outputVolume;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPause) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
     if (self.volumeButtonHandler == nil) {
         self.volumeButtonHandler = [JPSVolumeButtonHandler volumeButtonHandlerWithUpBlock:^{
-            self.volumeViewSlider.value = self.defaultVolume;
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [pluginResult setKeepCallback:@YES];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         } downBlock:^{
-            self.volumeViewSlider.value = self.defaultVolume;
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [pluginResult setKeepCallback:@YES];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
