@@ -22,8 +22,7 @@
 }
 
 - (void)onResume {
-    AVAudioSession *avAudioSession = AVAudioSession.sharedInstance;
-    self.defaultVolume = avAudioSession.outputVolume;
+    self.defaultVolume = self.volumeViewSlider.value;
     [self.volumeButtonHandler startHandler:YES];
 }
 
