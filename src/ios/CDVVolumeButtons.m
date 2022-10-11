@@ -16,10 +16,12 @@
 @implementation CDVVolumeButtons
 
 - (void)onPause {
+    self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
     [self.volumeButtonHandler stopHandler];
 }
 
 - (void)onResume {
+    self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
     [self.volumeButtonHandler startHandler:YES];
 }
 
@@ -37,10 +39,12 @@
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
     }
+    self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
     [self.volumeButtonHandler startHandler:YES];
 }
 
 - (void)stop:(CDVInvokedUrlCommand*)command {
+    self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
     [self.volumeButtonHandler stopHandler];
 }
 
