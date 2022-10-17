@@ -1,6 +1,5 @@
 var cordova = require("cordova");
 var exec = require("cordova/exec");
-var channel = require("cordova/channel");
 
 var VolumeButtons = function () {};
 
@@ -19,21 +18,13 @@ VolumeButtons.prototype.getInfo = function (successCallback, errorCallback) {
 
 var volumeButtons = new VolumeButtons();
 
-channel.createSticky("onCordovaConnectionReady");
-channel.waitForInitialization("onCordovaConnectionReady");
-
-channel.onCordovaReady.subscribe(function () {
-  volumeButtons.getInfo(
-    function (info) {
-      cordova.fireDocumentEvent("volumebuttonslistener", info);
-    },
-    function (e) {
-      console.log("CDVVolumeButtons error: " + e);
-    }
-  );
-  if (channel.onCordovaConnectionReady.state !== 2) {
-    channel.onCordovaConnectionReady.fire();
+volumeButtons.getInfo(
+  function (info) {
+    cordova.fireDocumentEvent("volumebuttonslistener", info);
+  },
+  function (e) {
+    console.log("CDVVolumeButtons error: " + e);
   }
-});
+);
 
 module.exports = volumeButtons;
