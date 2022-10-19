@@ -11,8 +11,10 @@ ionic cordova plugin add https://github.com/spoonconsulting/cordova-plugin-volum
 
 ## Usage
 
+```
 document.addEventListener("volumebuttonslistener", action, false);
 // Can be used for different actions(Example: For capturing image)
 function action() {
   console.log("Hello");
 }
+```
