@@ -1,9 +1,7 @@
 var cordova = require("cordova");
 var exec = require("cordova/exec");
 
-var VolumeButtons = function () {};
-
-VolumeButtons.prototype.getInfo = function (successCallback, errorCallback) {
+getInfo = function (successCallback, errorCallback) {
   var volumeEventHandler = cordova.addDocumentEventHandler(
     "volumebuttonslistener"
   );
@@ -16,9 +14,7 @@ VolumeButtons.prototype.getInfo = function (successCallback, errorCallback) {
   };
 };
 
-var volumeButtons = new VolumeButtons();
-
-volumeButtons.getInfo(
+getInfo(
   function (info) {
     cordova.fireDocumentEvent("volumebuttonslistener", info);
   },
@@ -26,5 +22,3 @@ volumeButtons.getInfo(
     console.log("CDVVolumeButtons error: " + e);
   }
 );
-
-module.exports = volumeButtons;
