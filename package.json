@@ -1,6 +1,6 @@
 {
   "name": "@spoonconsulting/cordova-plugin-volume-buttons",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "cordova-plugin-volume-buttons",
   "cordova": {
     "id": "@spoonconsulting/cordova-plugin-volume-buttons",
