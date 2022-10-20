@@ -29,7 +29,7 @@
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command {
-    [self runBlockInBackgroundWithTryCatch:^{
+    [self runBlockWithTryCatch:^{
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPause) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
         if (self.volumeButtonHandler == nil) {
@@ -50,21 +50,19 @@
 }
 
 - (void)stop:(CDVInvokedUrlCommand*)command {
-    [self runBlockInBackgroundWithTryCatch:^{
+    [self runBlockWithTryCatch:^{
         // Set session category to multi route as multiple volume/audio streams can be active at the same time
         self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
         [self.volumeButtonHandler stopHandler];
     } forCommand:command];
 }
 
--(void)runBlockInBackgroundWithTryCatch:(void (^)(void))block forCommand:(CDVInvokedUrlCommand*)command{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            block();
-        } @catch (NSException *exception) {
-            NSLog(@"CDVVolumeButtons Error %@", exception);
-        }
-    }];
+-(void)runBlockWithTryCatch:(void (^)(void))block forCommand:(CDVInvokedUrlCommand*)command{
+    @try {
+        block();
+    } @catch (NSException *exception) {
+        NSLog(@"CDVVolumeButtons Error %@", exception);
+    }
 }
 
 @end
