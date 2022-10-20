@@ -16,16 +16,19 @@
 @implementation CDVVolumeButtons
 
 - (void)onPause {
-    
-    // Set session category to multi route as multiple volume/audio streams can be active at the same time
-    self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
-    [self.volumeButtonHandler stopHandler];
+    [self runBlockWithTryCatch:^{
+        // Set session category to multi route as multiple volume/audio streams can be active at the same time
+        self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
+        [self.volumeButtonHandler stopHandler];
+    }];
 }
 
 - (void)onResume {
-    // Set session category to playback as it is the default used by JPSVolumeButtonHandler
-    self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
-    [self.volumeButtonHandler startHandler:YES];
+    [self runBlockWithTryCatch:^{
+        // Set session category to playback as it is the default used by JPSVolumeButtonHandler
+        self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
+        [self.volumeButtonHandler startHandler:YES];
+    }];
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command {
@@ -46,7 +49,7 @@
         // Set session category to playback as it is the default used by JPSVolumeButtonHandler
         self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
         [self.volumeButtonHandler startHandler:YES];
-    } forCommand:command];
+    }];
 }
 
 - (void)stop:(CDVInvokedUrlCommand*)command {
@@ -54,10 +57,10 @@
         // Set session category to multi route as multiple volume/audio streams can be active at the same time
         self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
         [self.volumeButtonHandler stopHandler];
-    } forCommand:command];
+    }];
 }
 
--(void)runBlockWithTryCatch:(void (^)(void))block forCommand:(CDVInvokedUrlCommand*)command{
+-(void)runBlockWithTryCatch:(void (^)(void))block {
     @try {
         block();
     } @catch (NSException *exception) {
