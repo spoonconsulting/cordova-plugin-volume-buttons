@@ -33,9 +33,6 @@
 
 - (void)start:(CDVInvokedUrlCommand*)command {
     [self runBlockWithTryCatch:^{
-        MPVolumeView *volumeView = [[MPVolumeView alloc] initWithFrame: CGRectMake(-1000, -1000, 100, 100)];
-        [volumeView sizeToFit];
-        [self.webView addSubview: volumeView];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPause) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
         if (self.volumeButtonHandler == nil) {
