@@ -84,7 +84,6 @@ static CGFloat minVolume                    = 0.00001f;
 }
 
 - (void)setupSession {
-    [self setInitialVolume];
     if (self.isStarted){
         // Prevent setup twice
         return;
@@ -95,7 +94,8 @@ static CGFloat minVolume                    = 0.00001f;
     NSError *error = nil;
     self.session = [AVAudioSession sharedInstance];
     // this must be done before calling setCategory or else the initial volume is reset
-    
+    [self setInitialVolume];
+
     [self.session setCategory:_sessionCategory
                   withOptions:_sessionOptions
                         error:&error];
