@@ -36,12 +36,14 @@ static CGFloat minVolume                    = 0.00001f;
         _sessionCategory = AVAudioSessionCategoryPlayback;
         _sessionOptions = AVAudioSessionCategoryOptionMixWithOthers;
 
-        _volumeView = [[MPVolumeView alloc] initWithFrame:CGRectMake(-1000, -1000, 100, 100)];
-        [_volumeView sizeToFit];
+        _volumeView = [[MPVolumeView alloc] initWithFrame:CGRectMake(MAXFLOAT, MAXFLOAT, 0, 0)];
 
         [[UIApplication sharedApplication].windows.firstObject addSubview:_volumeView];
         
         _volumeView.hidden = YES;
+        
+        _volumeView.showsVolumeSlider = NO;
+        _volumeView.showsRouteButton = NO;
 
         _exactJumpsOnly = NO;
     }
