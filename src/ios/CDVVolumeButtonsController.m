@@ -41,10 +41,6 @@ static CGFloat minVolume                    = 0.00001f;
         [[UIApplication sharedApplication].windows.firstObject addSubview:_volumeView];
         
         _volumeView.hidden = YES;
-        
-        _volumeView.showsVolumeSlider = NO;
-        _volumeView.showsRouteButton = NO;
-
         _exactJumpsOnly = NO;
     }
     return self;
@@ -88,6 +84,7 @@ static CGFloat minVolume                    = 0.00001f;
 }
 
 - (void)setupSession {
+    [self setInitialVolume];
     if (self.isStarted){
         // Prevent setup twice
         return;
@@ -98,7 +95,7 @@ static CGFloat minVolume                    = 0.00001f;
     NSError *error = nil;
     self.session = [AVAudioSession sharedInstance];
     // this must be done before calling setCategory or else the initial volume is reset
-    [self setInitialVolume];
+    
     [self.session setCategory:_sessionCategory
                   withOptions:_sessionOptions
                         error:&error];
@@ -169,11 +166,15 @@ static CGFloat minVolume                    = 0.00001f;
     if (self.initialVolume > maxVolume) {
         self.initialVolume = maxVolume;
         self.isAdjustingInitialVolume = YES;
-        [self setSystemVolume:self.initialVolume];
+        if (_volumeView) {
+            [self setSystemVolume:self.initialVolume];
+        }
     } else if (self.initialVolume < minVolume) {
         self.initialVolume = minVolume;
         self.isAdjustingInitialVolume = YES;
-        [self setSystemVolume:self.initialVolume];
+        if (_volumeView) {
+            [self setSystemVolume:self.initialVolume];
+        }
     }
 }
 
@@ -242,7 +243,9 @@ static CGFloat minVolume                    = 0.00001f;
         }
 
         // Reset volume
-        [self setSystemVolume:self.initialVolume];
+        if (_volumeView) {
+            [self setSystemVolume:self.initialVolume];
+        }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
