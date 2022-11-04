@@ -1,6 +1,6 @@
 #import <Cordova/CDV.h>
 #import "MediaPlayer/MPVolumeView.h"
-#import "JPSVolumeButtonHandler.h"
+#import <JPSVolumeButtonHandler.h>
 
 @interface CDVVolumeButtons : CDVPlugin {
   // Member variables go here.
