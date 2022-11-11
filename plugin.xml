@@ -11,6 +11,6 @@
             </feature>
         </config-file>
         <source-file src="src/ios/CDVVolumeButtons.m" />
-        <framework spec="~&gt; 1.0" src="JPSVolumeButtonHandler" type="podspec" />
+        <framework spec="1.0.4" src="JPSVolumeButtonHandler@SpoonConsulting" type="podspec" />
     </platform>
 </plugin>
