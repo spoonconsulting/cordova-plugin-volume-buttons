@@ -1,63 +1,162 @@
 #import <Cordova/CDV.h>
 #import "MediaPlayer/MPVolumeView.h"
-#import <JPSVolumeButtonHandler.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface CDVVolumeButtons : CDVPlugin {
   // Member variables go here.
 }
 
-- (void)onPause;
-- (void)onResume;
-- (void)start:(CDVInvokedUrlCommand*)command;
-- (void)stop:(CDVInvokedUrlCommand*)command;
-@property (strong, nonatomic) JPSVolumeButtonHandler *volumeButtonHandler;
+@property (nonatomic, strong) MPVolumeView   *volumeView;
+@property (nonatomic, strong) AVAudioSession *session;
+@property (nonatomic, strong) NSString *sessionCategory;
+@property (nonatomic, assign) float  userVolume;
+@property (nonatomic, assign) bool  isAdjustingInitialVolume;
+@property (nonatomic, assign) bool  appIsActive;
+@property (nonatomic, assign) AVAudioSessionCategoryOptions sessionOptions;
+@property (nonatomic) NSString *onVolumeButtonPressedHandlerId;
 @end
 
 @implementation CDVVolumeButtons
 
+static void *sessionContext = &sessionContext;
+
 - (void)onPause {
     [self runBlockWithTryCatch:^{
-        // Set session category to multi route as multiple volume/audio streams can be active at the same time
-        self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
-        [self.volumeButtonHandler stopHandler];
+        [self setSystemVolume:self.userVolume];
+        self.appIsActive = NO;
+        [self.session removeObserver:self forKeyPath:@"outputVolume"];
     }];
 }
 
 - (void)onResume {
     [self runBlockWithTryCatch:^{
-        // Set session category to playback as it is the default used by JPSVolumeButtonHandler
-        self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
-        [self.volumeButtonHandler startHandler:YES];
+        [self setupAudioSession];
+        [self setVolume];
     }];
 }
 
 - (void)start:(CDVInvokedUrlCommand*)command {
     [self runBlockWithTryCatch:^{
+        self.onVolumeButtonPressedHandlerId = command.callbackId;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPause) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
-        if (self.volumeButtonHandler == nil) {
-            self.volumeButtonHandler = [JPSVolumeButtonHandler volumeButtonHandlerWithUpBlock:^{
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-                [pluginResult setKeepCallback:@YES];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            } downBlock:^{
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-                [pluginResult setKeepCallback:@YES];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            }];
-        }
-        // Set session category to playback as it is the default used by JPSVolumeButtonHandler
-        self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryPlayback;
-        [self.volumeButtonHandler startHandler:YES];
+        
+        [self setupAudioSession];
+        self.userVolume = self.session.outputVolume;
+        [self setVolume];
     }];
 }
 
 - (void)stop:(CDVInvokedUrlCommand*)command {
     [self runBlockWithTryCatch:^{
-        // Set session category to multi route as multiple volume/audio streams can be active at the same time
-        self.volumeButtonHandler.sessionCategory = AVAudioSessionCategoryMultiRoute;
-        [self.volumeButtonHandler stopHandler];
+        [self.session removeObserver:self forKeyPath:@"outputVolume"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
     }];
+}
+
+- (void)setupAudioSession {
+    self.sessionCategory = AVAudioSessionCategoryPlayback;
+    self.sessionOptions = AVAudioSessionCategoryOptionMixWithOthers;
+    self.volumeView = [[MPVolumeView alloc] initWithFrame:CGRectMake(MAXFLOAT, MAXFLOAT, 0, 0)];
+
+    [[UIApplication sharedApplication].windows.firstObject addSubview:self.volumeView];
+
+    self.volumeView.hidden = NO;
+    self.session = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    [self.session setCategory:self.sessionCategory
+                  withOptions:self.sessionOptions
+                        error:&error];
+    [self.session setActive:YES error:&error];
+    [self.session addObserver:self
+                   forKeyPath:@"outputVolume"
+                      options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew)
+                      context:sessionContext];
+    self.appIsActive = YES;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(audioSessionInterrupted:)
+                                                 name:AVAudioSessionInterruptionNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidChangeActive:)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidChangeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+}
+
+- (void)audioSessionInterrupted:(NSNotification*)notification {
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger interuptionType = [[interuptionDict valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
+    switch (interuptionType) {
+        case AVAudioSessionInterruptionTypeBegan:
+            NSLog(@"Audio Session Interruption case started.", nil);
+            break;
+        case AVAudioSessionInterruptionTypeEnded:
+        {
+            NSLog(@"Audio Session Interruption case ended.", nil);
+            NSError *error = nil;
+            [self.session setActive:YES error:&error];
+            if (error) {
+                NSLog(@"%@", error);
+            }
+            break;
+        }
+        default:
+            NSLog(@"Audio Session Interruption Notification case default.", nil);
+            break;
+    }
+}
+
+- (void)applicationDidChangeActive:(NSNotification *)notification {
+    self.appIsActive = [notification.name isEqualToString:UIApplicationDidBecomeActiveNotification];
+    if (self.appIsActive ) {
+        [self setVolume];
+    }
+}
+
+- (void)setVolume {
+    float currentVolume = self.session.outputVolume;
+    
+    if (currentVolume >= 0.80000 || currentVolume <= 0.20000) {
+        self.isAdjustingInitialVolume = true;
+        [self setSystemVolume:0.50000];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == sessionContext) {
+        if (!self.appIsActive) {
+            // Probably control center, skip blocks
+            return;
+        }
+        if (self.isAdjustingInitialVolume) {
+            self.isAdjustingInitialVolume = false;
+            [self setVolume];
+            return;
+        }
+        [self takeImage];
+        [self setVolume];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+- (void)takeImage {
+    [self runBlockWithTryCatch:^{
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [pluginResult setKeepCallback:@YES];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.onVolumeButtonPressedHandlerId];
+    }];
+}
+
+- (void)setSystemVolume:(CGFloat)volume {
+    [[MPMusicPlayerController applicationMusicPlayer] setVolume:(float)volume];
 }
 
 -(void)runBlockWithTryCatch:(void (^)(void))block {
