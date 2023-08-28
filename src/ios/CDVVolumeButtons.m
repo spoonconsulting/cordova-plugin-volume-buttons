@@ -22,7 +22,6 @@ static void *sessionContext = &sessionContext;
 
 - (void)onPause {
     [self runBlockWithTryCatch:^{
-        [self setSystemVolume:self.userVolume];
         self.appIsActive = NO;
         [self.session removeObserver:self forKeyPath:@"outputVolume"];
     }];
