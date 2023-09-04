@@ -6,12 +6,12 @@
   // Member variables go here.
 }
 
-@property (nonatomic, strong) MPVolumeView   *volumeView;
+@property (nonatomic, strong) MPVolumeView *volumeView;
 @property (nonatomic, strong) AVAudioSession *session;
 @property (nonatomic, strong) NSString *sessionCategory;
-@property (nonatomic, assign) float  userVolume;
-@property (nonatomic, assign) bool  isAdjustingInitialVolume;
-@property (nonatomic, assign) bool  appIsActive;
+@property (nonatomic, assign) float userVolume;
+@property (nonatomic, assign) bool isAdjustingInitialVolume;
+@property (nonatomic, assign) bool appIsActive;
 @property (nonatomic, assign) AVAudioSessionCategoryOptions sessionOptions;
 @property (nonatomic) NSString *onVolumeButtonPressedHandlerId;
 @end
@@ -22,8 +22,7 @@ static void *sessionContext = &sessionContext;
 
 - (void)onPause {
     [self runBlockWithTryCatch:^{
-        self.appIsActive = NO;
-        [self.session removeObserver:self forKeyPath:@"outputVolume"];
+        [self removeListenersAndObservers];
     }];
 }
 
@@ -49,9 +48,19 @@ static void *sessionContext = &sessionContext;
 
 - (void)stop:(CDVInvokedUrlCommand*)command {
     [self runBlockWithTryCatch:^{
-        [self.session removeObserver:self forKeyPath:@"outputVolume"];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [self removeListenersAndObservers];
     }];
+}
+
+- (void)removeListenersAndObservers {
+    if (!self.appIsActive) return;
+    self.appIsActive = NO;
+    @try {
+        [self.session removeObserver:self forKeyPath:@"outputVolume"];
+    }
+    @catch (NSException * __unused exception) {
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupAudioSession {
@@ -114,7 +123,7 @@ static void *sessionContext = &sessionContext;
 
 - (void)applicationDidChangeActive:(NSNotification *)notification {
     self.appIsActive = [notification.name isEqualToString:UIApplicationDidBecomeActiveNotification];
-    if (self.appIsActive ) {
+    if (self.appIsActive) {
         [self setVolume];
     }
 }
@@ -139,14 +148,14 @@ static void *sessionContext = &sessionContext;
             [self setVolume];
             return;
         }
-        [self takeImage];
+        [self callback];
         [self setVolume];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
-- (void)takeImage {
+- (void)callback {
     [self runBlockWithTryCatch:^{
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [pluginResult setKeepCallback:@YES];
