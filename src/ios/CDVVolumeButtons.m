@@ -54,6 +54,7 @@ static void *sessionContext = &sessionContext;
 
 - (void)removeListenersAndObservers {
     if (!self.appIsActive) return;
+
     self.appIsActive = NO;
     @try {
         [self.session removeObserver:self forKeyPath:@"outputVolume"];
@@ -139,10 +140,8 @@ static void *sessionContext = &sessionContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == sessionContext) {
-        if (!self.appIsActive) {
-            // Probably control center, skip blocks
-            return;
-        }
+        if (!self.appIsActive) return;
+
         if (self.isAdjustingInitialVolume) {
             self.isAdjustingInitialVolume = false;
             [self setVolume];
